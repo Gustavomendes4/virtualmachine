@@ -5,6 +5,12 @@
 #include "../include/file.h"
 #include "../include/error.h"
 
+char* acceptedExt[] = {
+	".txt",
+
+	"\0",
+};
+
 char* scanFilePath(char* inpt){
 	printf("Input a file-> ");
 	scanPath(inpt, _MAX_PATH);
@@ -22,7 +28,7 @@ char* getFileExtension(char* path){
     while(path[i] != '.'){
         i--;
 
-		if(i == 0){
+		if(i == 0 || path[i] == '/' || path[i] == '\\'){
 			return NULL;
 		}
     }
@@ -31,16 +37,13 @@ char* getFileExtension(char* path){
 }
 
 int extensionAccepted(char* ext){
-	//printf("\nRecived: %s", ext);
 	
-	if(strcmp(ext, ".bin") == 0){
-
-		
-		return 1;
+	for(int i = 0; acceptedExt[i][0] != '\0'; i++){
+		if(strcmp(ext, acceptedExt[i]) == 0){
+			return 1;
+		}
 	}
-    
-    else
-        return 0;
+    return 0;
 }
 
 char getFileChar(FILE* f){

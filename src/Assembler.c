@@ -10,57 +10,20 @@
 #include "../include/register.h"
 
 void printAllWord(FILE* file, Label* labels);
-
 int process(FILE* file, FILE* fileOut);
+
+FILE* processInputFile(int argc, char* argv[]);
+FILE* processOutputFile(int argc, char* argv[]);
 
 int main(int argc, char* argv[]){
 
-	FILE *file, *fileOut;
-	char __input[_MAX_PATH];
-	char __output[_MAX_PATH];
-	char* path = __input;
-	char* pathOut = __output;
+	FILE *fileIn  = processInputFile(argc, argv);
+	FILE *fileOut = processOutputFile(argc, argv);
 
-	if(argc == 1){ // Input File
-		return error(ERR_NO_ARGUMENT, "", 0);
-		//strcpy(path, "../test.txt");
-	}
-	else{
-		path = argv[1];
-	}
+	if(fileIn == NULL || fileOut == NULL)
+		return -1;
 
-	char* ext = getFileExtension(path);
-	if(!extensionAccepted(ext)){
-		return error(ERR_INVALID_EXTENSION, ext, 0);
-	}
-
-	if(argc >= 3){ // Output File
-		pathOut = argv[2];
-		char* outExt = getFileExtension(pathOut);
-
-		if(outExt){
-			if(strcmp(outExt, OUTPUT_EXTENSION) != 0){
-				return error(ERR_INVALID_OUT_EXTENSION, outExt, 0);
-			}
-		}
-		else{
-			strcat(pathOut, OUTPUT_EXTENSION);
-		}
-	}
-	else{
-		pathOut = __output;
-		outputFileName(pathOut, path);
-	}
-
-	if((file = fopen(path, "rw")) == NULL){
-		return error(ERR_FILE_NOT_FOUND, path, 0);
-	}
-
-	if((fileOut = fopen(pathOut, "w")) == NULL){
-		return error(ERR_CANNOT_CREATE_OUT_FILE, path, 0);
-	}
-
-	return process(file, fileOut);
+	return process(fileIn, fileOut);
 }
 
 int process(FILE* file, FILE* fileOut){
@@ -68,12 +31,18 @@ int process(FILE* file, FILE* fileOut){
 	Label* labels = createLabelList(file);
 	
 	//printLabelList(labels);
-	printErrorList();
+	//printErrorList();
 	//printAllWord(file, labels);
-//------------------------------------
 
 	char ch = 1, word[30];
 	int i = 0;
+
+	while(!feof(file)){
+		ch = getFileChar(file);
+
+		//putchar(ch);
+	}
+
 
 	if(0)
 	while(!feof(file)){
@@ -151,4 +120,58 @@ void printAllWord(FILE* file, Label* labels){
 		*/
 	}
 	rewind(file);
+}
+
+FILE* processInputFile(int argc, char* argv[]){
+
+	FILE *file;
+	char __input[_MAX_PATH];
+	char* path = __input;
+
+	if(argc == 1){
+		exit(error(ERR_NO_ARGUMENT, "", 0));
+	}
+	else{
+		path = argv[1];
+	}
+
+	char* ext = getFileExtension(path);
+	if(!extensionAccepted(ext)){
+		exit(error(ERR_INVALID_EXTENSION, ext, 0));
+	}
+
+	if((file = fopen(path, "rw")) == NULL){
+		exit(error(ERR_FILE_NOT_FOUND, path, 0));
+	}
+
+	return file;
+}
+
+FILE* processOutputFile(int argc, char* argv[]){
+
+	FILE *fileOut;
+	char __output[_MAX_PATH];
+	char* pathOut = __output;
+	char* outExt;
+
+	if(argc < 3){
+		outputFileName(pathOut, argv[1]);
+	}
+	else{
+		strcpy(pathOut, argv[2]);
+	}
+
+	outExt = getFileExtension(pathOut);
+	if(outExt == NULL){
+		strcat(pathOut, OUTPUT_EXTENSION);
+	}	
+	else if(strcmp(outExt, OUTPUT_EXTENSION) != 0){
+		exit(error(ERR_INVALID_OUT_EXTENSION, outExt, 0));
+	}
+
+	if((fileOut = fopen(pathOut, "wb")) == NULL){
+		exit(error(ERR_CANNOT_CREATE_OUT_FILE, pathOut, 0));
+	}
+	printf("\narquivo criado: %s\n", pathOut);
+	return fileOut;
 }
