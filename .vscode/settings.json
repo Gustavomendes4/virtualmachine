@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "file.h": "c",
+        "stdio.h": "c",
+        "string.h": "c",
+        "instruction.h": "c",
+        "register.h": "c",
+        "label.h": "c",
+        "error.h": "c"
+    }
+}
