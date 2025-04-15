@@ -1,0 +1,11 @@
+build/
+bin/
+assets/
+
+# Ignorar arquivos temporários
+*.log
+*.tmp
+
+# Ignorar pastas de IDEs
+.vscode/
+.idea/
