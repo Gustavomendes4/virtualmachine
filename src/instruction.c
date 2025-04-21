@@ -18,6 +18,7 @@ const char* instructions[] = {
     "w", //W,
     "r", //R,
     "stp", //STP,
+    "nop", //NOP,
      
     "\0" // last
 };
@@ -115,13 +116,10 @@ InstructionCode instructionCode(char* str){
 }
 
 void instructionBin(char* str){
-
     InstructionCode code = instructionCode(str);
-
-    if(code < 0 || code >= _LAST_INST){
+    if(code < 0 || code >= _NOT_A_INSTRUCT){
         str[0] = '\0';
         return;
     }
-
     strcpy(str, binaryInstruction[code]);
 }

@@ -16,12 +16,20 @@ const char* errorMessages[] = {
 
     "Cannot create out file '%s'",//ERR_CANNOT_CREATE_OUT_FILE,
 
-    "Used label '%' was not declared",//ERR_LABEL_NOT_DECLARED,
+    "Used label '%' it not declared",//ERR_LABEL_NOT_DECLARED,
     "Empty label declaration",//ERR_EMPTY_LABEL,
     "The label '%' exceeds the maximum allowed length",//ERR_LONGER_LABEL,
     "The label '%' is already declared",//ERR_REDECLARE_LABEL,
     "Label name ('%') cannot be the same as a register name",//ERR_REGISTER_NAMED_LABEL,
     "Label name ('%') cannot be the same as instruction",//ERR_INSTRUCT_NAMED_LABEL      
+    
+    "Expected an intenger. '%' is not valid value",//ERR_NOT_INT_VALUE,
+    
+    "'%' is not a valid instruction",//ERR_NOT_A_INSTRUCTION,
+    
+    "'%' is not a valid register",//ERR_NOT_VALID_REGISTER,
+    
+    "Program is logger than memory, the limit is % words",//ERR_PROGRAM_LONGER,
 };
 
 Error* errorList = NULL;
@@ -37,6 +45,7 @@ ErrorCode error(ErrorCode error, char* arg, int line){
     else{
         Error er = newError(error, arg, line);
         pushError(er);
+        return error;
     }
 }
 
@@ -84,13 +93,23 @@ void printErrorList(){
 
     Error* iter = errorList;
 
-    printf("\n\n===== Lista de Erros =====");
+    if(iter == NULL)
+        return;
+
+    printf("\n _____________________________________________________________________\n");
+    printf(  "|                            Lista de Erros                           |");
+    printf("\n|__Line_.__Cod___.________________________Msg_________________________|");
+    printf("\n|       |        |                                                    |");
     
     while(iter){
-        printf("\n[%03d]: %02d | %s", iter->line, iter->code, iter->msg);
+        printf("\n|-> %03d |   %02d   | %-50s |", iter->line, iter->code, iter->msg);
         iter = iter->nxt;
     }
 
-    printf("\n==========================\n");
+    printf("\n|_______|________|____________________________________________________|\n");
 
+}
+
+int errorListIsEmpty(){
+    return errorList == NULL;
 }

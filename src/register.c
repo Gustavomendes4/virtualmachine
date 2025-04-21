@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "../include/utils.h"
 #include "../include/register.h"
@@ -16,7 +17,6 @@ const char* registers[] = {
 int isRegister(char* str){
 
     int i = 0;
-
     char reg[4];
 
     if(strlen(str) > 4)
@@ -35,12 +35,15 @@ int isRegister(char* str){
     return 0;
 }
 
-int numRegister(char* str){
+uint16_t numRegister(char* str){
     int i = 0, ret = -1;
+    char input[10];
+    strcpy(input, str);
+    toUpper(input);
 
     while(registers[i][0] != '\0'){
 
-        if(strcmp(registers[i], str) == 0){
+        if(strcmp(registers[i], input) == 0){
             ret = i;
         }
         i++;
@@ -86,4 +89,13 @@ BOOL isOperator(char* str){ // <--
             isNum = FALSE;
         }
     }
+}
+
+void printRegisters(uint8_t registerFile[]){
+	
+	for(int i = 0; registers[i][0] != '\0'; i++){
+		//printf("(%p)", &registerFile[i]);
+		printf("\t%s: ", registers[i]);
+		printf("%d\n", registerFile[i]);
+	}
 }

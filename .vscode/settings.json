@@ -6,6 +6,7 @@
         "instruction.h": "c",
         "register.h": "c",
         "label.h": "c",
-        "error.h": "c"
+        "error.h": "c",
+        "utils.h": "c"
     }
 }

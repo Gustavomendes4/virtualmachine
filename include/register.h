@@ -2,7 +2,8 @@
 #define REGISTER_H_DEFINED
 
 int isRegister(char* str);
-int numRegister(char* str);
+uint16_t numRegister(char* str);
 int isLiteral(char* str);
+void printRegisters(uint8_t registerFile[]);
 
 #endif

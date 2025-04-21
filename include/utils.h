@@ -44,7 +44,9 @@ BOOL isDigit(char digit);
 
 int toDigit(char digit);
 
-BOOL isNumber(char* numb);
+int isNumber(char* numb);
+
+int toNumber(char* str);
 
 void insertStringAtPercent(char* str1, char* str2);
 

@@ -17,8 +17,9 @@ typedef enum InstructionCode{
     W,
     R,
     STP,
+    NOP,
 
-    _LAST_INST
+    _NOT_A_INSTRUCT
 }InstructionCode;
 
 int isInstruction(char* str);

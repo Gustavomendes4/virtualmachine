@@ -5,8 +5,14 @@
 #include "../include/file.h"
 #include "../include/error.h"
 
-char* acceptedExt[] = {
+char* acceptedExtInput[] = {
 	".txt",
+
+	"\0",
+};
+
+char* acceptedExtOutput[] = {
+	".bin",
 
 	"\0",
 };
@@ -36,10 +42,12 @@ char* getFileExtension(char* path){
     return &path[i];
 }
 
-int extensionAccepted(char* ext){
-	
-	for(int i = 0; acceptedExt[i][0] != '\0'; i++){
-		if(strcmp(ext, acceptedExt[i]) == 0){
+int extensionAccepted(char* ext, int type){
+
+	char** extensions = (type == 0) ? acceptedExtOutput : acceptedExtInput;
+
+	for(int i = 0; extensions[i][0] != '\0'; i++){
+		if(strcmp(ext, extensions[i]) == 0){
 			return 1;
 		}
 	}
@@ -100,6 +108,39 @@ int getFileWord(FILE* file, char* goal){
 				return line;
 			}
 		}
+	}
+	strcpy(goal, word);
+	return line;
+}
+
+int getFileWord2(FILE* file, char* goal){
+
+	char ch;
+	int i = 0, line = 0;
+
+	while(1){
+		ch = getFileChar(file);
+
+		if(ch == '\n'){
+			ch = ' ';
+			line++;
+		}
+
+		if(ch == ':'){
+			goal[i++] = ch;
+			goal[i] = '\0';
+			return line;
+		}
+
+		if(ch == EOF || ch == ' ' || ch == ':'){
+			if(i > 0 || ch == EOF){
+				goal[i] = '\0';
+				break;
+			}
+			continue;
+		}
+		goal[i] = ch;
+		i++;
 	}
 	return line;
 }

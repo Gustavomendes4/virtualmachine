@@ -24,6 +24,15 @@ typedef enum ErrorCode{
     ERR_REGISTER_NAMED_LABEL,
     ERR_INSTRUCT_NAMED_LABEL,
 
+    //  variables
+    ERR_NOT_INT_VALUE,
+
+    //  Instrutions
+    ERR_NOT_A_INSTRUCTION,
+
+    //  Register
+    ERR_NOT_VALID_REGISTER,
+
     //  loader
     ERR_PROGRAM_LONGER,
     
@@ -46,5 +55,7 @@ void pushError(Error error);
 void printErrorList();
 
 Error newError(ErrorCode code, char* arg, int line);
+
+int errorListIsEmpty();
 
 #endif

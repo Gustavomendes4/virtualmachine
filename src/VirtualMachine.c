@@ -12,9 +12,9 @@
 
 #define MEMORY_LEN 320
 
-uint16_t a0=0, a1=1, a2=2, a3=3, Pc = 0;
+uint16_t a0=0, a1=1, a2=2, a3=3, Pc;
 //uint16_t* registerList[4] = {&a0, &a1, &a2, &a3};
-uint16_t registerFile[4] = {0, 1, 2, 3};
+uint8_t registerFile[4] = {0, 1, 2, 3};
 
 uint8_t memory[MEMORY_LEN];
 
@@ -35,7 +35,7 @@ FILE* processInputFile(int argc, char* argv[]){
 
 
 	char* ext = getFileExtension(path);
-	if(!extensionAccepted(ext)){
+	if(!extensionAccepted(ext, 0)){
 		exit(error(ERR_INVALID_EXTENSION, ext, 0));
 	}
 
@@ -50,16 +50,18 @@ int main(int argc, char* argv[]){
 	FILE *file = processInputFile(argc, argv);
 	loader(file);
 	fclose(file);
-	//printMemory(memory);
+	
 	process(memory);
+	printRegisters(registerFile);
+	printMemory(memory);
 	return 1;
 }
 
 int process(uint8_t* memor){
 
 	int stp = 1;
-	uint16_t *ra, *rb, *rc;
-	uint16_t mem1, mem2;
+	uint8_t *ra, *rb, *rc;
+	uint8_t mem1, mem2;
 
 	while(stp && Pc < MEMORY_LEN){
 		ra = &registerFile[(memory[Pc] & 12) >> 2];
@@ -82,16 +84,17 @@ int process(uint8_t* memor){
 			case  JMP:	(Pc = mem1);	break;
 			case  JEQ:	Pc = (*ra == *rb)? mem2 : Pc;	break;
 			case  JGT:	Pc = (*ra > *rb) ? mem2 : Pc;	break;
-			case  JLT:	Pc = (*ra < *rb) ? mem2 : Pc;	break;
+			case  JLT:	Pc = (*ra < *rb) ? mem2 : Pc;	printf("jlt: ra(%d) rb(%d): end(%d)", *ra, *rb, mem2);break;
 
 			case  W  :	(putchar(' '));	break;//
 			case  R  :	(putchar(' '));	break;//
 			case  STP: stp = 0;	break;
 		}
 		Pc += 2;
+		printRegisters(registerFile);
+		putchar('\n');
 	}
 
-	printRegisters();
 	return SUCCESS;
 }
 
@@ -101,6 +104,7 @@ void loader(FILE* file){
 	uint8_t byte;
 
 	fread(&Pc, sizeof(Pc), 1, file);	// Lê o primeiro byte, que é o valor inicial do PC
+	Pc = invertBytes(Pc);
 
 	while(fread(&byte, sizeof(byte), 1, file)){
 
@@ -120,15 +124,6 @@ void printMemory(){
 		printf("|  %03x  |  %04d  |\n\t", i, memory[i]);
 	}
 	printf("|_______|________|\n\n");
-}
-
-void printRegisters(){
-	
-	for(int i = 0; i < 4; i++){
-		//printf("(%p)", &registerFile[i]);
-		printf("\ta%d: ", i);
-		printf("%d\n", registerFile[i]);
-	}
 }
 
 InstructionCode decodOperation(uint8_t byte){

@@ -107,13 +107,14 @@ void compLib(){
 
 void compVM(){
 
-    FILE* f = fopen("../build/lib.a", "rb");
     char command[100];
+    FILE* f = fopen("../build/lib.a", "rb");
 
     if(f == NULL){
         puts("error: lib.a not found to compilation");
         return;
     }
+    fclose(f);
 
     strcpy(command, "gcc ../src/");
     strcat(command, virtualMachine);
@@ -130,7 +131,27 @@ void compVM(){
 
 void compAssembl(){
 
-    puts("Assembler compiled !\n");
+    char command[100];
+    FILE* f = fopen("../build/lib.a", "rb");
+
+    if(f == NULL){
+        puts("error: lib.a not found to compilation");
+        return;
+    }
+    fclose(f);
+
+    strcpy(command, "gcc ../src/");
+    strcat(command, assembler);
+    strcat(command, ".c ../build/lib.a -o ");
+    strcat(command, assembler);
+
+    #ifdef DEBUG
+        printf("%s\n", command);
+    #else
+        system(command);
+    #endif
+
+    puts("Assembler compiled !");
 }
 
 Token getToken(char* str){
